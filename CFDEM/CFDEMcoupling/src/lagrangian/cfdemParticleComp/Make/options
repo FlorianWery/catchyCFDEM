@@ -1,0 +1,56 @@
+sinclude $(GENERAL_RULES)/mplib$(WM_MPLIB)
+sinclude $(RULES)/mplib$(WM_MPLIB)
+
+GIT_VERSION := $(shell git describe --dirty --always --tags)
+PFLAGS+= -DGITVERSION=\"$(GIT_VERSION)\"
+PFLAGS+= -DDEBUGFLAG=\"$(WM_COMPILE_OPTION)\"
+
+EXE_INC = \
+     $(PFLAGS) \
+     $(PINC) \
+    -I$(CFDEM_OFVERSION_DIR) \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/MomentumTransportModels/momentumTransportModels/lnInclude \
+    -I$(CATCHY_SRC)/MomentumTransportModels/compressible/lnInclude \
+    -I$(LIB_SRC)/MomentumTransportModels/phaseCompressible/lnInclude \
+    -I$(CFDEM_SRC_DIR)/MomentumTransportModels/phaseCompressible/lnInclude \
+    -I$(CFDEM_SRC_DIR)/ThermophysicalTransportModels/phaseCompressible/lnInclude \
+    -I$(CATCHY_SRC)/ThermophysicalTransportModels/lnInclude \
+    -I$(CATCHY_SRC)/ThermophysicalTransportModels/rhoReactionThermo/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/specie/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/reactionThermo/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/solidThermo/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/basic/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/chemistryModel/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/gsChemistryModel/lnInclude \
+    -I$(LIB_SRC)/meshTools/lnInclude \
+    -I$(LIB_SRC)/ODE/lnInclude \
+    -I$(LIB_SRC)/lagrangian/basic/lnInclude \
+    -I$(LIB_SRC)/OpenFOAM/containers/HashTables/labelHashSet \
+    -I$(CFDEM_LIGGGHTS_SRC_DIR) \
+    -I$(CFDEM_SRC_DIR)/cfdTools \
+    -Wno-old-style-cast \
+    -Wno-unused-result \
+    -Wno-literal-suffix
+
+LIB_LIBS = \
+     $(PLIBS) \
+    -L$(CFDEM_LIB_DIR) \
+    -L$(FOAM_USER_LIBBIN) \
+    -lcatchyCFDEMPhaseMomentumTransportModels \
+    -lcatchyCFDEMPhaseThermophysicalTransportModels \
+    -lcatchyFluidThermophysicalModels \
+    -lcatchySpecie \
+    -lcatchyChemistryModel \
+    -lcatchyGSChemistryModel \
+    -lcatchyFluidThermoMomentumTransportModels \
+    -lcatchyThermophysicalTransportModels \
+    -lcatchyRhoReactionThermophysicalTransportModels \
+    -lcatchyReactionThermophysicalModels \
+    -lmomentumTransportModels \
+    -lfiniteVolume \
+    -lmeshTools \
+    -llagrangian \
+    -Wl,-rpath,$(CFDEM_LIGGGHTS_BIN_DIR) \
+    -L$(CFDEM_LIGGGHTS_BIN_DIR) \
+    -lliggghts

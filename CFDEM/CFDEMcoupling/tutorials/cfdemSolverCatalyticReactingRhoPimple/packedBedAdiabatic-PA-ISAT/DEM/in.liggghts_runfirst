@@ -1,0 +1,119 @@
+echo            both
+log             ../DEM/log.liggghts
+thermo_log      ../DEM/post/thermo.txt
+
+atom_style      granular
+atom_modify     map array
+communicate     single vel yes
+
+boundary        m m m
+newton          off
+
+units           si
+processors      1 1 4
+
+# read the restart file
+read_restart    ../DEM/post/restart/liggghts.restart
+
+neighbor        0.001 bin
+neigh_modify    delay 0
+
+# Material properties required for granular pair styles
+fix             m1 all property/global youngsModulus peratomtype 5.e6
+fix             m2 all property/global poissonsRatio peratomtype 0.45
+fix             m3 all property/global coefficientRestitution peratomtypepair 1 0.3
+fix             m4 all property/global coefficientFriction peratomtypepair 1 0.5
+
+# pair style
+pair_style      gran model hertz tangential history # Hertzian without cohesion
+pair_coeff      * *
+
+# timestep, gravity
+timestep        5e-8
+fix             gravi all gravity 9.81 vector 0.0 0.0 -1.0
+
+# walls
+fix             xwalls1  all wall/gran model hertz tangential history primitive type 1 xplane -0.001
+fix             xwalls2  all wall/gran model hertz tangential history primitive type 1 xplane 0.001
+fix             ywalls1  all wall/gran model hertz tangential history primitive type 1 yplane -0.001
+fix             ywalls2  all wall/gran model hertz tangential history primitive type 1 yplane 0.001
+fix             zwalls1  all wall/gran model hertz tangential history primitive type 1 zplane 0.0
+fix             zwalls2  all wall/gran model hertz tangential history primitive type 1 zplane 0.04
+
+# heat transfer
+fix             ftco all property/global thermalConductivity peratomtype 1. # lambda in [W/(K*m)]
+fix             ftca all property/global thermalCapacity peratomtype 5.  # cp in [J/(kg*K)]
+
+# cfd coupling
+fix             cfd all couple/cfd couple_every 20 mpi
+fix             cfd2 all couple/cfd/force/implicit
+fix             cfd3 all couple/cfd/convection T0 998.15
+
+# define gas species variables
+fix             CH4 all property/atom CH4 scalar yes no no 0.66667
+fix             O2 all property/atom O2 scalar yes no no 0.33333
+fix             N2 all property/atom N2 scalar yes no no 0.0
+
+fix             H2 all property/atom H2 scalar yes no no 0.0
+fix             H all property/atom H scalar yes no no 0.0
+fix             O all property/atom O scalar yes no no 0.0
+fix             H2O all property/atom H2O scalar yes no no 0.0
+fix             OH all property/atom OH scalar yes no no 0.0
+fix             H2O2 all property/atom H2O2 scalar yes no no 0.0
+fix             HO2 all property/atom HO2 scalar yes no no 0.0
+fix             CO all property/atom CO scalar yes no no 0.0
+fix             CO2 all property/atom CO2 scalar yes no no 0.0
+fix             CH3 all property/atom CH3 scalar yes no no 0.0
+fix             CH2 all property/atom CH2 scalar yes no no 0.0
+fix             CH3O2 all property/atom CH3O2 scalar yes no no 0.0
+fix             CH3OH all property/atom CH3OH scalar yes no no 0.0
+fix             CH3O all property/atom CH3O scalar yes no no 0.0
+fix             CH2OH all property/atom CH2OH scalar yes no no 0.0
+fix             CH2O all property/atom CH2O scalar yes no no 0.0
+fix             HCO all property/atom HCO scalar yes no no 0.0
+fix             C2H6 all property/atom C2H6 scalar yes no no 0.0
+fix             C2H5 all property/atom C2H5 scalar yes no no 0.0
+fix             C2H4 all property/atom C2H4 scalar yes no no 0.0
+fix             C2H3 all property/atom C2H3 scalar yes no no 0.0
+fix             C2H2 all property/atom C2H2 scalar yes no no 0.0
+fix             CH3CHO all property/atom CH3CHO scalar yes no no 0.0
+fix             CH3CO all property/atom CH3CO scalar yes no no 0.0
+fix             CH2CHO all property/atom CH2CHO scalar yes no no 0.0
+fix             CH2CO all property/atom CH2CO scalar yes no no 0.0
+fix             HCCO all property/atom HCCO scalar yes no no 0.0
+
+# define surface species variables
+fix             _S_ all property/atom _S_ scalar yes no no 1.0
+fix             O_S all property/atom O_S scalar yes no no 0.0 
+fix             OH_S all property/atom OH_S scalar yes no no 0.0 
+fix             H2O_S all property/atom H2O_S scalar yes no no 0.0
+fix             CH3O_S all property/atom CH3O_S scalar yes no no 0.0 
+fix             CH2O_S all property/atom CH2O_S scalar yes no no 0.0 
+fix             CHO_S all property/atom CHO_S scalar yes no no 0.0 
+fix             CO_S all property/atom CO_S scalar yes no no 0.0 
+fix             CO2_S all property/atom CO2_S scalar yes no no 0.0 
+fix             C2H3O_S all property/atom C2H3O_S scalar yes no no 0.0 
+fix             C2H4O_S all property/atom C2H4O_S scalar yes no no 0.0 
+
+fix             p all property/atom p scalar yes no no 110000.
+
+# set particle temperature for the bed
+run             0
+region          total block INF INF INF INF INF INF units box
+set             region total property/atom Temp 998.15
+
+# apply nve integration to all particles that are inserted as single particles
+fix             integr all nve/noforce
+
+# screen output
+compute         maxtem all reduce max f_Temp[0] 
+compute         mintem all reduce min f_Temp[0] 
+compute         totHF all reduce sum f_convectiveHeatFlux[0]
+compute         totHS all reduce sum f_heatSource[0]
+fix             print_temp all print 100 "$(time), $(c_maxtem), $(c_mintem)" file "../DEM/post/evolutionMinMaxTemperature.csv" title "# Time max(T) min(T)"
+fix             print_hf all print 100 "$(time), $(c_totHF), $(c_totHS)" file "../DEM/post/evolutionHeat.csv"  title "# Time sum(heatflux) sum(heatsource)"
+
+dump            dmp all custom/vtk 100000 ../DEM/post/dump_liggghts_run.*.vtk id type radius x y z vx vy vz fx fy fz
+dump            dmpcov all custom/vtk 100000 ../DEM/post/coverages/dump_liggghts_cov.*.vtk id type radius x y z f__S_[0] f_O_S[0] f_OH_S[0] f_H2O_S[0] f_CH3O_S[0] f_CH2O_S[0] f_CHO_S[0] f_CO_S[0] f_CO2_S[0] f_C2H3O_S[0] f_C2H4O_S[0] f_Temp[0] f_heatSource[0]
+reset_timestep  0
+run             0

@@ -1,0 +1,51 @@
+sinclude $(GENERAL_RULES)/mplib$(WM_MPLIB)
+include $(CFDEM_ADD_LIBS_DIR)/additionalLibs
+
+EXE_INC = \
+     $(PFLAGS) \
+     $(PINC) \
+    -I$(CFDEM_OFVERSION_DIR) \
+    -I$(CATCHY_SRC)/ThermophysicalTransportModels/lnInclude \
+    -I$(CATCHY_SRC)/ThermophysicalTransportModels/rhoReactionThermo/lnInclude \
+    -I$(LIB_SRC)/MomentumTransportModels/momentumTransportModels/lnInclude \
+    -I$(CATCHY_SRC)/MomentumTransportModels/compressible/lnInclude \
+    -I$(LIB_SRC)/MomentumTransportModels/phaseCompressible/lnInclude \
+    -I$(CFDEM_SRC_DIR)/MomentumTransportModels/phaseCompressible/lnInclude \
+    -I$(CFDEM_SRC_DIR)/ThermophysicalTransportModels/phaseCompressible/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/specie/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/reactionThermo/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/basic/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/chemistryModel/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/gsChemistryModel/lnInclude \
+    -I$(LIB_SRC)/finiteVolume/cfdTools \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/meshTools/lnInclude \
+    -I$(LIB_SRC)/sampling/lnInclude \
+    -I$(CFDEM_SRC_DIR)/lagrangian/cfdemParticleComp/lnInclude \
+    -I$(CFDEM_SRC_DIR)/lagrangian/cfdemParticleComp/cfdTools \
+    -I$(LIB_SRC)/ODE/lnInclude \
+    -I$(CATCHY_SRC)/combustionModels/lnInclude \
+    -I$(CFDEM_LIGGGHTS_SRC_DIR)
+
+EXE_LIBS = \
+    -L$(FOAM_USER_LIBBIN) \
+    -L$(CFDEM_LIB_DIR)\
+    -lcatchyCFDEMPhaseMomentumTransportModels \
+    -lcatchyCFDEMPhaseThermophysicalTransportModels \
+    -lcatchyThermophysicalTransportModels \
+    -lcatchyReactionThermophysicalModels \
+    -lcatchyChemistryModel \
+    -lcatchyGSChemistryModel \
+    -lcatchyFluidThermophysicalModels \
+    -lcatchySpecie \
+    -lmomentumTransportModels \
+    -lcatchyFluidThermoMomentumTransportModels \
+    -lODE \
+    -lcatchyCombustionModels \
+    -lfiniteVolume \
+    -lmeshTools \
+    -lsampling \
+    -lcatchyFvOptions \
+    -l$(CFDEM_LIB_NAME) \
+     $(CFDEM_ADD_LIB_PATHS) \
+     $(CFDEM_ADD_LIBS) 

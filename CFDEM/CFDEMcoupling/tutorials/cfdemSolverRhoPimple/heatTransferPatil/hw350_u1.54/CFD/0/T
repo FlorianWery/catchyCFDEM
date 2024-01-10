@@ -1,0 +1,93 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   uniform 363;
+
+boundaryField
+{
+    walls
+    {
+        type            codedFixedValue;
+        value           uniform 293;
+        name            patil;   // name of generated BC
+        code
+        #{         
+            scalar Ta = 293.;
+            scalar hw = 350.;
+
+            const volScalarField& kappa = internalField().mesh().lookupObject<volScalarField>("thCond");
+            const scalarField kappaw(kappa.boundaryField()[patch().index()].patchInternalField());
+            const scalarField kappaDeltaCoeffs(kappaw*patch().deltaCoeffs());
+            scalarField w(2.0*hw/(hw + 2.0*kappaDeltaCoeffs));
+
+            scalarField T0 = w*Ta + (1.-w)*patchInternalField();
+            operator==((T0+patchInternalField())/2.0);
+        #};
+        /*type            codedMixed;
+        value           uniform 293;
+        refValue        uniform 293;
+        refGradient     uniform 0;
+        valueFraction   uniform 1;
+        name            patil;   // name of generated BC
+        code
+        #{         
+            scalar Ta = 293.;
+            scalar hw = 350.;
+
+            const volScalarField& kappa = internalField().mesh().lookupObject<volScalarField>("thCond");
+            const scalarField kappaw(kappa.boundaryField()[patch().index()].patchInternalField());
+            const scalarField kappaDeltaCoeffs(kappaw*patch().deltaCoeffs());
+            scalarField w(2.0*hw/(hw + 2.0*kappaDeltaCoeffs));
+
+            scalarField T0 = w*Ta + (1.-w)*patchInternalField();
+            scalarField Tw = (T0+patchInternalField())/2.0;
+
+            this->refValue() = Zero;
+            this->refGrad() = hw*(Tw-Ta);
+            this->valueFraction() = Zero;
+        #};*/
+        // codeInclude
+        //#{
+        //    #include "fvCFD.H"
+        //#};
+        // codeOptions
+        //#{
+        //    -I$(LIB_SRC)/finiteVolume/lnInclude
+        //#};
+    }
+    
+    inlet
+    {
+        type        fixedValue;
+        value		uniform 293;
+    }
+
+    outlet
+    {
+        type        zeroGradient;
+    }
+
+    nozzle
+    {
+        type        fixedValue;
+        value		uniform 293;
+    }
+}
+
+// ************************************************************************* //

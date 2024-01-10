@@ -1,0 +1,82 @@
+#echo            both
+#log             ../DEM/log.liggghts
+#thermo_log      ../DEM/post/thermo.txt
+
+atom_style      granular
+atom_modify     map array
+communicate     single vel yes
+
+boundary        f f f
+newton          off
+
+units           si
+processors      3 2 1
+
+# read the restart file
+read_restart    ../DEM/post/restart/liggghts.restart
+
+neighbor        0.0005 bin
+neigh_modify    delay 0
+
+# Material properties required for granular pair styles
+fix         m1 all property/global youngsModulus peratomtype 1e8 1e8 1e8
+fix         m2 all property/global poissonsRatio peratomtype 0.22 0.34 0.25
+fix         m3 all property/global coefficientRestitution peratomtypepair 3 0.97 0.97 0.97 0.97 0.97 0.97 0.97 0.97 0.97
+fix         m4 all property/global coefficientFriction peratomtypepair 3 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1
+fix         m5 all property/global youngsModulusOriginal peratomtype 60e9 69e9 35e9
+
+# pair style
+pair_style  gran model hertz tangential history
+pair_coeff  * *
+
+# timestep, gravity
+timestep    2e-6
+fix         gravi all gravity 9.81 vector 0.0 0.0 -1.0
+
+# group particles per type
+group	    gran type 1
+group	    alum type 2
+group	    glass type 3
+
+# walls
+fix     xwalls1  all wall/gran model hertz tangential history primitive type 2 xplane 0.0 temperature 293
+fix     xwalls2  all wall/gran model hertz tangential history primitive type 2 xplane 0.08 temperature 293
+fix     ywalls1  all wall/gran model hertz tangential history primitive type 3 yplane 0.0 temperature 293
+fix     ywalls2  all wall/gran model hertz tangential history primitive type 2 yplane 0.015 temperature 293
+fix     zwalls1  all wall/gran model hertz tangential history primitive type 2 zplane 0.0 temperature 293
+fix     zwalls2  all wall/gran model hertz tangential history primitive type 2 zplane 0.25 temperature 293
+
+# heat transfer
+fix         ftco all property/global thermalConductivity peratomtype 1.4 30.0 30.0 # lambda in [W/(K*m)]
+fix         ftca all property/global thermalCapacity peratomtype 840. 2700. 3980. # cp in [J/(kg*K)]
+fix         heatcond gran heat/gran/conduction initial_temperature 363.
+
+# cfd coupling
+fix         cfd all couple/cfd couple_every 100 mpi
+fix         cfd2 all couple/cfd/force #/implicit
+fix         cfd3 gran couple/cfd/convection T0 363. 
+
+# set particle temperature for the bed
+run         0
+set	        group gran property/atom Temp 363.
+set	        group alum property/atom Temp 293.
+set	        group glass property/atom Temp 293.
+
+# apply nve integration to all particles that are inserted as single particles
+fix         integr all nve/sphere
+
+# screen output
+compute         centerOfMass all com
+compute         tem all reduce ave f_Temp[0] 
+thermo_style    custom step time c_tem vol c_centerOfMass[3]
+thermo          100
+thermo_modify   lost ignore norm no
+compute_modify  thermo_temp dynamic yes
+
+# file output
+fix         ave_temp all print 100 "$(time), $(c_tem)" file evolutionTemperature.csv
+
+dump            dmp all custom/vtk 25000 ../DEM/post/dump_liggghts_run.*.vtk id type radius x y z vx vy vz fx fy fz f_Temp[0] 
+
+reset_timestep   0 
+run             0

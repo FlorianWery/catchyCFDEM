@@ -1,0 +1,4 @@
+cfdemSolverRhoPimple/dir
+cfdemSolverReactingRhoPimple/dir
+cfdemSolverCatalyticReactingRhoPimple/dir
+cfdemSolverCatalyticReactingRhoPimpleMass/dir

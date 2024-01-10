@@ -1,0 +1,141 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      couplingProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+syncMode            false;
+//verbose;
+
+modelType           "A";
+
+couplingInterval    100;
+
+voidFractionModel   divided;
+
+locateModel         engine;
+
+meshMotionModel     noMeshMotion;
+
+regionModel         allRegion;
+
+IOModel             basicIO;
+
+probeModel          off;
+
+dataExchangeModel   twoWayMPI;
+
+averagingModel      dense;
+
+clockModel          off;
+
+smoothingModel      off;
+
+forceModels
+(
+    GidaspowDrag
+    gradPForce
+    viscForce
+);
+
+energyModels
+(
+    heatTransferGunn
+);
+
+catalyticChemistryModels
+(
+    off
+);
+
+thermCondModel      off;
+
+momCoupleModels
+(
+    implicitCouple
+);
+
+//===========================================================================//
+
+heatTransferGunnProps
+{
+    partTempName        "Temp";
+    partHeatFluxName    "convectiveHeatFlux";
+    calcPartTempField   true;
+    //partRefTemp         298;
+    interpolation       false;
+}
+
+implicitCoupleProps
+{
+    velFieldName        "U";
+    granVelFieldName    "Us";
+    voidfractionFieldName "voidfraction";
+    interpolation       false;
+}
+
+gradPForceProps
+{
+    pFieldName          "p";
+    voidfractionFieldName "voidfraction";
+    velocityFieldName   "U";
+    interpolation       false;
+}
+
+viscForceProps
+{
+    velocityFieldName   "U";
+    interpolation       false;
+}
+
+GidaspowDragProps
+{
+    verbose             true;
+    velFieldName        "U";
+    voidfractionFieldName "voidfraction";
+    granVelFieldName    "Us";
+    interpolation       false;
+    phi                 1;
+}
+
+fieldStoreProps
+{
+    scalarFieldNames
+    (
+    );
+
+    vectorFieldNames
+    (
+        "U"
+    );
+}
+
+dividedProps
+{
+    alphaMin            0.1;
+    scaleUpVol          1.0;
+    interpolation       false;
+    //procBoundaryCorrection true;//engineIB only
+}
+
+engineProps
+{
+    treeSearch          true;
+}
+
+"(twoWayMPIProps|M2MProps)"
+{
+    liggghtsPath        "../DEM/in.liggghts_run";
+}
+// ************************************************************************* //

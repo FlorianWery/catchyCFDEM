@@ -1,0 +1,124 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+libs            ("libcatchyFiniteVolume.so");
+
+application     cfdemSolverRhoPimple;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         10;
+
+deltaT          2e-4;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.05;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  15;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   7;
+
+runTimeModifiable yes;
+
+functions
+{
+    wallHeatFlux1
+    {
+        type            wallHeatFlux;
+        libs            ("libcatchyFieldFunctionObjects.so");
+        log             false;
+        writeControl    writeTime;
+        writeFields     true;
+        patches         (walls nozzle);
+    }
+
+    gasT
+    {
+        type            volFieldValue;
+        libs            ("libcatchyFieldFunctionObjects.so");
+        log             false;
+        writeControl    timeStep;
+        writeInterval   10;
+        writeFields     false;
+        regionType      all;
+        operation       weightedVolAverage;
+        weightField     voidfraction;
+        fields
+        (
+            T
+        );
+    }
+
+    flowrate_in
+    {
+        type            surfaceFieldValue;
+        libs            ("libcatchyFieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        regionType      patch;
+        fields          (phi);
+        operation       sum;
+        name            inlet;
+    }
+
+    flowrate_out
+    {
+        type            surfaceFieldValue;
+        libs            ("libcatchyFieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        regionType      patch;
+        fields          (phi);
+        operation       sum;
+        name            outlet;
+    }
+
+    flowrate_walls
+    {
+        type            surfaceFieldValue;
+        libs            ("libcatchyFieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        regionType      patch;
+        fields          (phi);
+        operation       sum;
+        name            walls;
+    }
+}
+
+OptimisationSwitches 
+{
+    fileHandler collated;
+}
+
+// ************************************************************************* //

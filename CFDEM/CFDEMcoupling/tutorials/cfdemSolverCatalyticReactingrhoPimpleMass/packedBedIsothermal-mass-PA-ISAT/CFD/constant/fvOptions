@@ -1,0 +1,37 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      fvOptions;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+options
+{
+    fixedTemperature
+    {
+        type            fixedTemperatureConstraint;
+        active          yes;
+        selectionMode   all;
+
+        mode            uniform;      // uniform or lookup
+
+        // For uniform option
+        temperature     constant 1098.15;// fixed temperature with time [K]
+
+        // For lookup option
+        // T            <Tname>;      // optional temperature field name
+    }
+}
+
+//************************************************************************** //
+

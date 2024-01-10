@@ -1,0 +1,31 @@
+species         
+1
+(
+_S_
+)
+;
+
+_S_
+{
+    specie
+    {
+        molWeight       100;
+        size            1;
+        surfaceDensity  1.0;
+    }
+    equationOfState
+    {
+        rho             2950;
+    }
+    thermodynamics
+    {
+        Cp              5;
+        Cv              5;
+        Hf              0;
+    }
+    transport
+    {
+        mu              0;
+        Pr              1;
+    }
+}

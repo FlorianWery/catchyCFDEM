@@ -1,0 +1,27 @@
+EXE_INC = \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/surfMesh/lnInclude \
+    -I$(LIB_SRC)/fileFormats/lnInclude \
+    -I$(LIB_SRC)/meshTools/lnInclude \
+    -I$(LIB_SRC)/triSurface/lnInclude \
+    -I$(CATCHY_SRC)/ThermophysicalTransportModels/lnInclude \
+    -I$(CATCHY_SRC)/ThermophysicalTransportModels/rhoReactionThermo/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/specie/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/reactionThermo/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/basic/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/chemistryModel/lnInclude \
+    -I$(CATCHY_SRC)/thermophysicalModels/gsChemistryModel/lnInclude
+
+EXE_LIBS = \
+    -L$(FOAM_USER_LIBBIN) \
+    -lcatchyGSChemistryModel \
+    -lcatchyChemistryModel \
+    -lcatchyReactionThermophysicalModels \
+    -lcatchyFluidThermophysicalModels \
+    -lcatchyReactionThermophysicalModels \
+    -lmomentumTransportModels \
+    -lcatchyFluidThermoMomentumTransportModels \
+    -lcatchyThermophysicalTransportModels \
+    -lcatchyRhoReactionThermophysicalTransportModels \
+    -lfiniteVolume \
+    -lcatchySpecie

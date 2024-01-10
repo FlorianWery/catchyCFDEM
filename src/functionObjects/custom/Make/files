@@ -1,0 +1,8 @@
+writeCylindricalCoordinates/writeCylindricalCoordinates.C
+writeUCylindricalCoordinates/writeUCylindricalCoordinates.C
+
+fieldAveragenozero/fieldAveragenozero.C
+fieldAveragenozero/fieldAverageItemnozero/fieldAverageItemnozero.C
+fieldAveragenozero/fieldAverageItemnozero/fieldAverageItemIOnozero.C
+
+LIB = $(FOAM_USER_LIBBIN)/libcatchyFunctionObjects

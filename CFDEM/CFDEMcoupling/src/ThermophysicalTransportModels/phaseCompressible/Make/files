@@ -1,0 +1,4 @@
+phaseThermophysicalTransportModels.C
+rhoReactionPhaseThermophysicalTransportModels.C
+
+LIB = $(FOAM_USER_LIBBIN)/libcatchyCFDEMPhaseThermophysicalTransportModels

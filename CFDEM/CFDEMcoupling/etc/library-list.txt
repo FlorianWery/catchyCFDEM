@@ -1,0 +1,4 @@
+MomentumTransportModels/phaseCompressible/dir
+ThermophysicalTransportModels/phaseCompressible/dir
+lagrangian/cfdemParticleComp/dir
+finiteVolume/dir

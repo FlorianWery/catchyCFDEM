@@ -1,0 +1,29 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      vtkDumpProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// name LIGGGHTS dump files
+demDumpFiles        "$FOAM_CASE/../DEM/post/dump_liggghts_run.";
+
+// DEM time step
+demTimeStep         1e-7; 
+
+// LIGGGHTS fields to sample
+scalarFields        (radius);
+
+// name of the lagrangian particle cloud to be created (default: particleCloud)
+//cloudName           particleCloud;
+
+// ************************************************************************* //

@@ -1,0 +1,190 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      couplingProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+syncMode            false;
+//verbose;
+
+modelType           "A";
+
+couplingInterval    1;
+
+voidFractionModel   divided;//centre;//
+
+locateModel         engine;
+
+meshMotionModel     noMeshMotion;
+
+regionModel         allRegion;
+
+IOModel             basicIO;
+
+probeModel          off;
+
+dataExchangeModel   twoWayMPI;
+
+averagingModel      dense;
+
+clockModel          standardClock;
+
+smoothingModel      off;
+
+forceModels
+(
+    //GidaspowDrag
+    gradPForce
+    viscForce
+    //fieldStore
+);
+
+energyModels
+(
+    heatTransferGunn
+);
+
+catalyticChemistryModels
+(
+    //pseudoHomCatalyticChemistry
+    //simpleCatalyticChemistryV
+    simpleCatalyticChemistry
+    //PACatalyticChemistry
+);
+
+massTransferModels
+(
+    //massTransferGunn
+);
+
+thermCondModel      off;
+
+momCoupleModels
+(
+    implicitCouple
+);
+
+//===========================================================================//
+
+heatTransferGunnProps
+{
+    partTempName        "Temp";
+    partHeatFluxName    "convectiveHeatFlux";
+    calcPartTempField   true;
+    //partRefTemp         298;
+    interpolation       false;
+    implicit true;
+}
+
+massTransferGunnProps
+{
+    catalystName        "catalyst";
+    gasName        		"gas";
+}
+
+
+PACatalyticChemistryProps
+{
+    catalystName        "catalyst";
+    useFluidTemperature true;
+    tolerance		 1e-3;
+    nBins		 100;
+}
+
+pseudoHomCatalyticChemistryProps
+{
+    catalystName        "catalyst";
+    useFluidTemperature true;
+}
+
+simpleCatalyticChemistryProps
+{
+    catalystName        "catalyst";
+    useFluidTemperature false;
+    useParticleQdot     true;
+    partHeatSourceName  "heatSource";
+}
+
+implicitCoupleProps
+{
+    velFieldName        "U";
+    granVelFieldName    "Us";
+    voidfractionFieldName "voidfraction";
+    interpolation       false;
+}
+
+gradPForceProps
+{
+    pFieldName          "p";
+    voidfractionFieldName "voidfraction";
+    velocityFieldName   "U";
+    interpolation       false;
+}
+
+viscForceProps
+{
+    velocityFieldName   "U";
+    interpolation       false;
+}
+
+GidaspowDragProps
+{
+    verbose             true;
+    velFieldName        "U";
+    voidfractionFieldName "voidfraction";
+    granVelFieldName    "Us";
+    interpolation       false;
+    phi                 1;
+}
+
+fieldStoreProps
+{
+    scalarFieldNames
+    (
+    );
+
+    vectorFieldNames
+    (
+        "U"
+    );
+}
+
+dividedProps
+{
+    alphaMin            0.1;
+    scaleUpVol          1.0;
+    interpolation       false;
+    //procBoundaryCorrection true;//engineIB only
+}
+
+centreProps
+{
+    alphaMin            0.10;
+    interpolation       false;
+}
+
+engineProps
+{
+    treeSearch          true;
+}
+
+"(twoWayMPIProps|M2MProps)"
+{
+    liggghtsPath        "../DEM/in.liggghts_run";
+    
+    scalarAtomTransferData     (_S_ O_S OH_S H2O_S CH3O_S CH2O_S CHO_S CO_S CO2_S C2H3O_S C2H4O_S heatSource); //);
+    //scalarAtomTransferData       (heatSource);
+    //scalarVectorTransferData	 (surf);//(gas surf);
+}
+// ************************************************************************* //

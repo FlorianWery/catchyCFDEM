@@ -1,0 +1,168 @@
+export CFDEM_PROJECT=CFDEM
+export CFDEM_VERSION=19.09
+
+################################################################################
+# USER EDITABLE PART: Changes made here may be lost with the next upgrade
+#
+# Please set to the appropriate path if the default is not correct.
+#
+# CFDEMcoupling
+export CFDEM_INST_DIR=$CATCHY_DIR/$CFDEM_PROJECT
+export CFDEM_PROJECT_DIR=$CFDEM_INST_DIR/CFDEMcoupling
+#
+# LIGGGHTS
+export CFDEM_LIGGGHTS_INST_DIR=$CFDEM_INST_DIR/LIGGGHTS
+#
+# Path to additional libraries
+export CFDEM_ADD_LIBS_DIR=
+#
+# END OF (NORMAL) USER EDITABLE PART
+################################################################################
+
+#- The old dirs to be cleaned from the environment variables
+cfdemOldDirs="$CFDEM_LIGGGHTS_BIN_DIR $CFDEM_APP_DIR $CFDEM_LIB_DIR"
+
+export CFDEM_LIGGGHTS_SRC_DIR=$CFDEM_LIGGGHTS_INST_DIR/src
+export CFDEM_LIGGGHTS_BIN_DIR=$CFDEM_LIGGGHTS_INST_DIR/src-build
+
+#------------------------------------------------------------------------------
+# Source initialization functions
+#------------------------------------------------------------------------------
+. $WM_PROJECT_DIR/etc/config.sh/functions
+
+#------------------------------------------------------------------------------
+
+export CFDEM_SRC_DIR=$CFDEM_PROJECT_DIR/src
+export CFDEM_SOLVER_DIR=$CFDEM_PROJECT_DIR/applications/solvers
+export CFDEM_UT_DIR=$CFDEM_PROJECT_DIR/applications/utilities
+export CFDEM_TUT_DIR=$CFDEM_PROJECT_DIR/tutorials
+
+#------------------------------------------------------------------------------
+
+#- CFDEM lib name
+export CFDEM_LIB_NAME=catchyLagrangianCFDEM
+
+#- Check if additional libraries should be compiled together with solvers
+if [[ $CFDEM_ADD_LIBS_DIR == "" ]]; then
+    export CFDEM_ADD_LIBS_DIR=$CFDEM_PROJECT_DIR/etc
+else
+    echo "using CFDEM_ADD_LIBS_DIR=$CFDEM_ADD_LIBS_DIR defined by user."
+fi
+
+#------------------------------------------------------------------------------
+
+#- path to libraries
+export CFDEM_LIB_DIR=$FOAM_USER_LIBBIN #$CFDEM_PROJECT_DIR/platforms/$WM_OPTIONS/lib
+
+#- path to apps
+export CFDEM_APP_DIR=$FOAM_USER_APPBIN #$CFDEM_PROJECT_DIR/platforms/$WM_OPTIONS/bin
+
+#- create directories
+#mkdir -p $CFDEM_LIB_DIR
+#mkdir -p $CFDEM_APP_DIR
+
+#- path to OF version flag file
+export CFDEM_OFVERSION_DIR=$CFDEM_PROJECT_DIR/etc/OFversion
+
+#------------------------------------------------------------------------------
+# Clean standard environment variables (PATH, LD_LIBRARY_PATH)
+#------------------------------------------------------------------------------
+foamClean=$WM_PROJECT_DIR/bin/foamCleanPath
+
+#- Clean PATH
+cleaned=`$foamClean "$PATH" "$cfdemOldDirs"` && PATH="$cleaned"
+
+#- Clean LD_LIBRARY_PATH
+cleaned=`$foamClean "$LD_LIBRARY_PATH" "$cfdemOldDirs"` \
+    && LD_LIBRARY_PATH="$cleaned"
+
+export PATH LD_LIBRARY_PATH
+
+#- add binary directories to $PATH
+_foamAddPath $CFDEM_APP_DIR:$CFDEM_LIGGGHTS_BIN_DIR
+_foamAddLib $CFDEM_LIB_DIR
+
+#------------------------------------------------------------------------------
+# Cleanup environment:
+#------------------------------------------------------------------------------
+unset cleaned foamClean cfdemOldDirs
+
+#------------------------------------------------------------------------------
+# Unload initialization functions:
+#------------------------------------------------------------------------------
+. $WM_PROJECT_DIR/etc/config.sh/functions
+
+#------------------------------------------------------------------------------
+# aliases for easy navigation (no changes necessary)
+#------------------------------------------------------------------------------
+
+#- shortcut to cfdem path
+alias cfdem='cd $CFDEM_PROJECT_DIR'
+
+#- shortcut to src path
+alias cfdemSrc='cd $CFDEM_SRC_DIR'
+
+#- shortcut to tutorial path
+alias cfdemTut='cd $CFDEM_TUT_DIR'
+
+#- shortcut to solver path
+alias cfdemSol='cd $CFDEM_SOLVER_DIR'
+
+#- shortcut to utilities path
+alias cfdemUt='cd $CFDEM_UT_DIR'
+
+#- shortcut to LIGGGHTS path
+alias cfdemLIG='cd $CFDEM_LIGGGHTS_SRC_DIR'
+
+#- shortcut to system test
+alias cfdemSysTest='bash $CFDEM_PROJECT_DIR/etc/cfdemSystemTest.sh'
+
+#- shortcut to pull LIGGGHTS
+alias cfdemPullLIG='bash $CFDEM_PROJECT_DIR/etc/pullLIGGGHTS.sh'
+
+#- shortcut to pull CFDEMcoupling
+alias cfdemPullCFDEMcoupling='bash $CFDEM_PROJECT_DIR/etc/pullCFDEMcoupling.sh'
+
+#- shortcut to clean CFDEM
+alias cfdemCleanCFDEM='bash $CFDEM_PROJECT_DIR/etc/cleanCFDEMcoupling.sh'
+
+#- shortcut to compile LIGGGHTS + sublibraries
+alias cfdemCompLIG='bash $CFDEM_PROJECT_DIR/etc/compileLIGGGHTS.sh'
+
+#- shortcut to compile CFDEMcoupling +LIGGGHTS
+alias cfdemCompCFDEMall='bash $CFDEM_PROJECT_DIR/etc/compileCFDEMcoupling_all.sh'
+
+#- shortcut to compile CFDEMcoupling (src+solvers)
+alias cfdemCompCFDEM='bash $CFDEM_PROJECT_DIR/etc/compileCFDEMcoupling.sh'
+
+#- shortcut to compile CFDEMcoupling src
+alias cfdemCompCFDEMsrc='bash $CFDEM_PROJECT_DIR/etc/compileCFDEMcoupling_src.sh'
+
+#- shortcut to compile CFDEMcoupling solvers
+alias cfdemCompCFDEMsol='bash $CFDEM_PROJECT_DIR/etc/compileCFDEMcoupling_sol.sh'
+
+#- shortcut to compile CFDEMcoupling utilities
+alias cfdemCompCFDEMuti='bash $CFDEM_PROJECT_DIR/etc/compileCFDEMcoupling_uti.sh'
+
+#- shortcut to visualize the clock model data
+alias vizClock='python $CFDEM_UT_DIR/vizClock/matPlot.py'
+
+#- recursive touch of current directory
+alias touchRec='find ./* -exec touch {} \;'
+
+#- shortcut to run liggghts in serial
+cfdemLiggghts() { $CFDEM_LIGGGHTS_BIN_DIR/liggghts < $1; }
+export -f cfdemLiggghts
+
+#- shortcut to run liggghts in parallel
+cfdemLiggghtsPar() { mpirun -np $2 $CFDEM_LIGGGHTS_BIN_DIR/liggghts < $1; }
+export -f cfdemLiggghtsPar
+
+#- shortcut to open files including a pattern
+cfdemGrep() { grep -rl "$1" ./* | xargs gedit; }
+export -f cfdemGrep
+
+#- shortcut lo list files in a directory
+#cfdemListFiles() { find $1 | sed s:""$1"":: > listOfFiles.txt; }   #leave out the dir iteslf in list
+cfdemListFiles() { find $1 > listOfFiles.txt; }                     #keep the dir in list
+export -f cfdemListFiles

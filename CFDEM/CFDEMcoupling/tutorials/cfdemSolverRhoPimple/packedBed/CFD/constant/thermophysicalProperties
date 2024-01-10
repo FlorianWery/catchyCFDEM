@@ -1,0 +1,117 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      thermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+thermoType
+{
+    type            heRhoThermo;
+    mixture         multiComponentMixture;
+    transport       logPolynomial;
+    thermo          janaf;
+    equationOfState perfectGas;
+    specie          specie;
+    energy          sensibleInternalEnergy;
+}
+
+dpdt                false;
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+species             (N2 O2 CH4);
+
+N2
+{
+    specie
+    {
+        molWeight       28.014;
+    }
+    thermodynamics
+    {
+        Tlow            200;
+        Thigh           6000;
+        Tcommon         1000;
+        highCpCoeffs    ( 2.9380297 0.0014183803 -5.03281045e-07 8.07555464e-11 -4.76064275e-15 -917.18099 5.95521985 );
+        lowCpCoeffs     ( 3.53603521 -0.000158270944 -4.26984251e-07 2.3754259e-09 -1.39708206e-12 -1047.49645 2.94603724 );
+    }
+    transport
+    {
+        As              1.67212e-06;
+        Ts              170.672;
+        muLogCoeffs<8>  ( -18.24886222 2.112818115 -0.1935486914 0.008496273468 0 0 0 0 );
+        kappaLogCoeffs<8> ( -0.7255536667 -2.567781578 0.5028728505 -0.02491792658 0 0 0 0 );
+    }
+    elements
+    {
+        N               2;
+    }
+}
+
+O2
+{
+    specie
+    {
+        molWeight       31.998;
+    }
+    thermodynamics
+    {
+        Tlow            200;
+        Thigh           6000;
+        Tcommon         1000;
+        highCpCoeffs    ( 3.65980488 0.000659877372 -1.44158172e-07 2.14656037e-11 -1.36503784e-15 -1216.03048 3.42074148 );
+        lowCpCoeffs     ( 3.78498258 -0.00302002233 9.92029171e-06 -9.77840434e-09 3.28877702e-12 -1064.13589 3.64780709 );
+    }
+    transport
+    {
+        As              1.67212e-06;
+        Ts              170.672;
+        muLogCoeffs<8>  ( -18.75442777 2.36558335 -0.2263063567 0.009911242385 0 0 0 0 );
+        kappaLogCoeffs<8> ( -14.11768764 3.208038986 -0.3207012564 0.01409556439 0 0 0 0 );
+    }
+    elements
+    {
+        O               2;
+    }
+}
+
+CH4
+{
+    specie
+    {
+        molWeight       16.043;
+    }
+    thermodynamics
+    {
+        Tlow            300;
+        Thigh           4000;
+        Tcommon         1000;
+        highCpCoeffs    ( 1.65326226 0.0100263099 -3.31661238e-06 5.36483138e-10 -3.14696758e-14 -10009.5936 9.90506283 );
+        lowCpCoeffs     ( 5.14911468 -0.0136622009 4.91453921e-05 -4.84246767e-08 1.66603441e-11 -10246.5983 -4.63848842 );
+    }
+    transport
+    {
+        As              1.67212e-06;
+        Ts              170.672;
+        muLogCoeffs<8>  ( -21.45140652 3.18952949 -0.3315362325 0.01439308884 0 0 0 0 );
+        kappaLogCoeffs<8> ( -8.419530525 -0.339960331 0.3397623615 -0.02185718833 0 0 0 0 );
+    }
+    elements
+    {
+        C               1;
+        H               4;
+    }
+}
+
+// ************************************************************************* //

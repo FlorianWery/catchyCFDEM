@@ -1,0 +1,51 @@
+reactions
+{
+    reaction1
+    {
+        type            irreversibleSurfaceLangmuirHinshelwood;
+        reaction        "2CH4^1 + 0.5O2^0.5 + _S_^0 = C2H6 + H2O + _S_";
+        reactantIndices (6 1);
+        A               (3.83e7 8.2 1.18e-1);
+        Ta              (19003.0 -6735.3 -9501.5);
+        m               (1 1 2);
+    }
+    reaction2
+    {
+        type            irreversibleSurfaceLangmuirHinshelwood;
+        reaction        "CH4^0.5 + 1.5O2^0.5 + _S_^0 = CO2 + H2 + H2O + _S_";
+        reactantIndices (6 1);
+        A               (1.58e4 8.2 0.0);
+        Ta              (14793.5 -6735.3 0.0);
+        m               (1 0 1);
+    }
+    reaction3
+    {
+        type            irreversibleSurfaceLangmuirHinshelwood;
+        reaction        "CH4^0.5 + O2^0.5 + _S_^0 = CO + H2 + H2O + _S_";
+        reactantIndices (6 1);
+        A               (2.19e2 8.2 0.0);
+        Ta              (10824.5 -6735.3 0.0);
+        m               (1 0 1);
+    }
+    reaction4
+    {
+        type            irreversibleSurfaceLangmuirHinshelwood;
+        reaction        "CO^1 + 0.5O2^0 + _S_^0 = CO2 + _S_";
+        reactantIndices (6 1);
+        A               (1.14e6 8.2 0.0);
+        Ta              (14793.5 -6735.3 0.0);
+        m               (1 0 1);
+    }
+    reaction5
+    {
+        type            irreversibleSurfaceLangmuirHinshelwood;
+        reaction        "C2H6^1 + 0.5O2^0.5 + _S_^0 = C2H4 + H2O + _S_";
+        reactantIndices (6 1);
+        A               (1.23e8 8.2 0.0);
+        Ta              (18762.5 -6.74e3 0.0);
+        m               (1 0 1);
+    }
+}
+Tlow            0;
+Thigh           4.503599627e+15;
+
