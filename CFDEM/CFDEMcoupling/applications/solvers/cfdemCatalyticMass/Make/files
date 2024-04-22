@@ -1,0 +1,3 @@
+cfdemCatalyticMass.C
+
+EXE=$(CFDEM_APP_DIR)/cfdemCatalyticMass
