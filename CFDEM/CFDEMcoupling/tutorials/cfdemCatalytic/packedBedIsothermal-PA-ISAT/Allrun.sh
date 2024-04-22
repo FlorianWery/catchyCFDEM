@@ -1,26 +1,28 @@
-#!/bin/bash -l
-#
-#PBS -N SrLaSiC-large
-#PBS -l nodes=1:ppn=4
-#PBS -l walltime=71:59:59
-#PBS -m abe
+#!/bin/bash
 
-source $HOME/setup_CFDEM-8_env-kirlia-foss-2020b.sh
+export PBS_NP=4
+#! manually check decomposeParDict and in.liggghts_run to be consistent with number of processors !
 
-cd $PBS_O_WORKDIR
+
+
+./Allclean.sh
+
+# run liggghts init
+cd DEM
+mpirun -np $PBS_NP $CFDEM_LIGGGHTS_BIN_DIR/liggghts -in in.liggghts_init > ../log.liggghts_init
+cd ..
 
 # run CFDDEM
 cd DEM
-cp in.liggghts_runrestart in.liggghts_run
+cp in.liggghts_runfirst in.liggghts_run
 
 cd ../CFD
 sed -i 's/endTime         0.15;/endTime         0.10;/g' system/controlDict
 cp -r 0.orig 0
 blockMesh > log.blockMesh
 
-reconstructPar -noLagrangian -latestTime > log.reconstructPar
 decomposePar -force > log.decomposePar
-mpirun -np $PBS_NP mycfdemSolverCatalyticReactingRhoPimpleMass -parallel > log.mycfdemSolverCatalyticReactingRhoPimpleMass 2>&1
+mpirun -np $PBS_NP cfdemCatalytic -parallel > log.cfdemCatalytic 2>&1
 reconstructPar -noLagrangian -latestTime > log.reconstructPar
 #rm -r processor*
 
@@ -42,7 +44,7 @@ cd ../CFD
 sed -i 's/endTime         0.10;/endTime         0.15;/g' system/controlDict
 decomposePar -latestTime -force > log.decomposePar
 
-mpirun -np $PBS_NP mycfdemSolverCatalyticReactingRhoPimpleMass -parallel > log.mycfdemSolverCatalyticReactingRhoPimpleMassrestart 2>&1
+mpirun -np $PBS_NP cfdemCatalytic -parallel > log.cfdemCatalyticrestart 2>&1
 reconstructPar -noLagrangian -latestTime > log.reconstructPar
 #rm -r processor*
 

@@ -17,10 +17,11 @@ else
     echo "canteraToFoam not available - copying input files from backup"
     cp $CATCHY_ETC/backupDicts/mechanisms/ocm_polimi31_srla2o3/* constant/mechanism/
 fi
+
 cp -r 0.orig 0
 blockMesh > log.blockMesh
 decomposePar -force > log.decomposePar
-mpirun -np $PBS_NP cfdemSolverReactingRhoPimple -parallel > log.cfdemSolverReactingRhoPimple
+mpirun -np $PBS_NP cfdemReactingPimple -parallel > log.cfdemReactingPimple
 reconstructPar -noLagrangian -latestTime > log.reconstructPar
 rm -r processor*
 

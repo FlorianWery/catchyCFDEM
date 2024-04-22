@@ -12,7 +12,7 @@ cd ..
 cd CFD
 blockMesh > log.blockMesh
 decomposePar -force > log.decomposePar
-mpirun -np $PBS_NP cfdemSolverRhoPimple -parallel > log.cfdemSolverRhoPimple
+mpirun -np $PBS_NP cfdemPimple -parallel > log.cfdemPimple 2>&1
 reconstructPar -latestTime -noLagrangian > log.reconstructPar
 rm -r processor*
 

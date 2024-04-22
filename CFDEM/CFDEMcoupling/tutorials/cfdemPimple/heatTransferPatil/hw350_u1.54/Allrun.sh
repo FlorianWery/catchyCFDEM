@@ -20,4 +20,4 @@ blockMesh > log.blockMesh
 topoSet > log.topoSet
 createPatch -overwrite > log.createPatch
 decomposePar -force > log.decomposePar
-mpirun -np $PBS_NP cfdemSolverRhoPimple -parallel > log.cfdemSolverRhoPimple
+mpirun -np $PBS_NP cfdemPimple -parallel > log.cfdemPimple 2>&1
