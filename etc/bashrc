@@ -19,8 +19,8 @@
 #
 # Location of catchyFOAM files
 # Please set to the appropriate path if the default is not correct
-export CATCHY_DIR=$VSC_DATA/catchyCFDEM
-#$HOME/OpenFOAM
+export CATCHY_DIR=$HOME/OpenFOAM
+#
 #
 # Location of cantera installation
 # Please set to the appropriate path if the default is not correct
