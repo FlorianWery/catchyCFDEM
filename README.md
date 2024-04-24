@@ -43,16 +43,15 @@ Navigate to the catchyCFDEM repository and run
 ```
 This will install all libraries, solvers and utilities of catchyFOAM.
 
-To install the CFD-DEM part of the code source the below files and run the following command:
-```
-    cfdemCompCFDEMall
-```
 To use catchyCFDEM, the catchyCFDEM environment should be set by sourcing the *catchyCFDEM/etc/bashrc* and *catchyCFDEM/CFDEM/CFDEMcoupling/etc/bashrc* files. This can be done by adding the following line at the end of the user's *.bashrc* file (to be adjusted accordingly if catchyCFDEM is not located in *$HOME/OpenFOAM*)
 ```
     source $HOME/OpenFOAM/catchyCFDEM/etc/bashrc
     source $HOME/OpenFOAM/catchyCFDEM/CFDEM/CFDEMcoupling/etc/bashrc
 ```
-
+To install the CFD-DEM part of the code, run the following command:
+```
+    cfdemCompCFDEMall
+```
 ## Uninstall catchyCFDEM
 To clean the installation of catchyFOAM, run
 ```
