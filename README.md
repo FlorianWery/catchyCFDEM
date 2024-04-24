@@ -48,7 +48,7 @@ To use catchyCFDEM, the catchyCFDEM environment should be set by sourcing the *c
     source $HOME/OpenFOAM/catchyCFDEM/etc/bashrc
     source $HOME/OpenFOAM/catchyCFDEM/CFDEM/CFDEMcoupling/etc/bashrc
 ```
-To install the CFD-DEM part of the code, run the following command:
+To install the CFD-DEM part of the code, run the following command from inside the CFDEM folder:
 ```
     cfdemCompCFDEMall
 ```
