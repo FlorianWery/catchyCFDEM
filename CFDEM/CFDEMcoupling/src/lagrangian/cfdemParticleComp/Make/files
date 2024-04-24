@@ -159,7 +159,4 @@ $(catChemistryModels)/simpleCatalyticChemistry/simpleCatalyticChemistry.C
 $(catChemistryModels)/PACatalyticChemistry/PACatalyticChemistry.C
 $(catChemistryModels)/pseudoHomCatalyticChemistry/pseudoHomCatalyticChemistry.C
 
-$(catChemistryModels)/simpleCatalyticChemistryV/simpleCatalyticChemistryV.C
-
-
 LIB = $(CFDEM_LIB_DIR)/lib$(CFDEM_LIB_NAME)
