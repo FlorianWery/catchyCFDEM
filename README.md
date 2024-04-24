@@ -58,4 +58,3 @@ To clean the installation of catchyFOAM, run
 ```
     ./Allwclean
 ```
-To isntall
